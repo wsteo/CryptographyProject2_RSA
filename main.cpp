@@ -1,14 +1,29 @@
 #include <iostream>
+#include<cmath>
+#include<cstdlib>
+#include<cstring>
+#include<conio.h>
 
 using namespace std;
 
 bool isCoPrime(long int e,long int phi){
+    long int lowest;
     long int i=2;
-    while(i<e){
-        if((e%i==0) && (phi%i==0)) return false;
+    bool coprime=true;
+
+    if (phi>e){
+        lowest=e;
+    }else{
+        lowest=phi;
+    }
+
+    while(i<lowest){
+        if(!(phi%i) && !(e%i)){
+            coprime=false;
+        }
         i++;
     }
-    return true;
+    return coprime;
 }
 
 bool isPrime(long int n){
@@ -16,17 +31,17 @@ bool isPrime(long int n){
 
     long int i = 2;
 
-    while(i<n/2){
-        if(n%i==0) return false;
+    while(i<=n/2){
+        if(!(n%i)) return false;
         i++;
     }
     return true;
 }
 
 long int findE(long int phi){
-    long int e;
+    long int e=0;
     do{
-        cout << "Input e value: ";
+        cout << "Enter e value: ";
         cin >> e;
     }while (!isCoPrime (e,phi));
     return e;
@@ -50,13 +65,13 @@ long int findD(long int e, long int phi){
         v=n;
     }
     if(y<1){
-        return phi+y;
+        y=phi+y;
     }
     return y;
 }
 
 void KeyGen(long int &e, long int &d, long int &n){
-    long int p,q; //prime numbers
+    long int p,q,phi; //prime numbers
 
     do{
         cout << "Enter Prime Number(p): ";
@@ -69,12 +84,20 @@ void KeyGen(long int &e, long int &d, long int &n){
     }while (!isPrime(q));
 
     n=p*q;
-    long int phi=(p-1)*(q-1);
+    cout << "n is " << n << endl;
+
+    phi=(p-1)*(q-1);
+    cout << "phi is " << phi << endl;
 
     e=findE(phi);
-    d=findD(e,phi);
+    cout << "e is " << e << endl;
+    if(!e){
+        cout << "Choose two suitable prime number" << endl;
+        exit(1);
+    }
 
-    return;
+    d=findD(e,phi);
+    cout << "d is " << d << endl;
 }
 
 long int EncryptDecrypt(long int t, long int e_d, long int n){
@@ -93,17 +116,69 @@ long int EncryptDecrypt(long int t, long int e_d, long int n){
     return x;
 }
 
+void EncryptDecryptString(long int e, long int n)
+{
+    char *str=new char[1000];
+    char *str1=new char[1000];
+
+    cout << "\nEnter a string: ";
+    cin >> str;
+
+    cout << "Encrypting using Public Key: " << endl;
+    int i=0;
+    while(i!=strlen(str)){
+        str1[i]=EncryptDecrypt(str[i],e,n);
+        i++;
+    }
+    cout << str1 << endl;
+}
+
+void EncryptDecryptNumber(long int num1, long int num2)
+{
+    long int n;
+
+    cout << "\nEnter an integer number: ";
+    cin >> n;
+
+    cout << EncryptDecrypt(n,num1,num2) << endl;
+}
+
 int main()
 {
-    long int e,d,n;
+    long int e,d=0,n;
     KeyGen(e,d,n);
     cout << "public key: ("<< e << ","<< n << ")" << endl;
     cout << "private key: ("<< d << ","<< n << ")" << endl;
 
-    long int M = 95;
-    long int C = EncryptDecrypt(M,e,n);
-    long int M_= EncryptDecrypt(C,d,n);
-    cout << "Ciphertext: " << C << " Plaintext: " << M_ << endl;
+    cout << "\nPress 1: Encrypt Numbers" << "\nPress 2: Encrypt String" <<endl;
+    int choice;
+    cin >> choice;
 
+    switch (choice){
+        case 1:
+            EncryptDecryptNumber(e,n);
+            break;
+        case 2:
+            EncryptDecryptString(e,n);
+            break;
+        default:
+            cout<<"Invalid option"<<endl;
+            exit(1);
+    }
+
+    cout << "\nPress 1: Decrypt Numbers" << "\nPress 2: Decrypt String" <<endl;
+
+    switch (choice){
+        case 1:
+            EncryptDecryptNumber(d,n);
+            break;
+        case 2:
+            EncryptDecryptString(d,n);
+            break;
+        default:
+            cout<<"Invalid Option"<<endl;
+            exit(1);
+    }
+    getch();
     return 0;
 }
