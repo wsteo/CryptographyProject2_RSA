@@ -1,5 +1,9 @@
-#include <iostream>
 #include <fstream>
+#include<iostream>
+#include<cmath>
+#include<cstdlib>
+#include<cstring>
+#include<conio.h>
 
 using namespace std;
 
@@ -58,7 +62,7 @@ long int findD (long int e, long int phi_n) {
     return y;
 }
 
-void GenerateKey (long int &e, long int &d, long int &n) {
+void KeyGen (long int &e, long int &d, long int &n) {
     long int p, q;
 
     do {
@@ -98,13 +102,9 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     return x;
 }
 
-int main()
-{
-    long int e, d, n;
-    GenerateKey(e, d, n);
-    cout << "Public Key: (" << e << "," << n << ")" << endl;
-    cout << "Private Key: (" << d << "," << n << ")" << endl;
+void EncryptNumber(long int e, long int d, long int n){
 
+    //open content from text file
     fstream file;
     int content;
     file.open("PlainText.txt");
@@ -112,27 +112,124 @@ int main()
     cout << "From PlainText File: " << content <<endl;
     file.close();
 
+    //encrypt with public key
     long int C_ = EncryptDecrypt(content, e, n);
+    //encrypt with private key
     long int C = EncryptDecrypt(C_, d, n);
 
+    //write on another file
     file.open("EncryptedText.txt");
     file<<C;
     file.close();
 
+    //read from the previous file
     int content2;
     file.open("EncryptedText.txt");
     file>>content2;
-    cout << "From EncryptexText File: " << content2 <<endl;
+    cout << "From EncryptedText File: " << content2 <<endl;
     file.close();
 
+    //decrypt with private key
     long int M_ = EncryptDecrypt(content2, d, n);
+    //decrypt with public key
     long int M = EncryptDecrypt(M_, e, n);
 
+    //write to another file
     file.open("DecryptedText.txt");
     file<<M;
     file.close();
 
-    cout << "Ciphertext: " << C << " Plaintext: " << M << endl;
+    cout << "Ciphertext: " << C << endl;
+    cout << "Plaintext: " << M << endl;
+}
+
+char* EncryptDecryptString (char content[], long int e, long int n)
+{
+    char *str = new char[1000];
+    str=content;
+    char *str1 = new char[1000];
+
+    //cout << "Encrypting using Public Key: " << endl;
+    int i = 0;
+    while (i != strlen(str)) {
+        str1[i] = EncryptDecrypt(str[i], e, n);
+        i++;
+    }
+
+    //cout << str1 << endl;
+    return str1;
+}
+
+void EncryptString(long int e, long int d, long int n){
+    //open content from text file
+    fstream file;
+    char content[1000];
+    char *C_=new char [1000];
+    char *C=new char[1000];
+    file.open("PlainTextString.txt",ios::in);
+    file.getline(content,1000);
+    cout << "From PlainText File: " << content <<endl;
+    file.close();
+
+    //encrypt with public key
+    C_ = EncryptDecryptString(content, e, n);
+
+    //cout<<"test: "<<C_;
+    //encrypt with private key
+    C = EncryptDecryptString(C_, d, n);
+    //cout<<"test: "<<C;
+
+    //write on another file
+    file.open("EncryptedTextString.txt",ios::trunc|ios::out);
+    file<<C;
+    file.close();
+
+    //read from the previous file
+    char content2[1000];
+    char *M_=new char [1000];
+    char *M=new char[1000];
+    file.open("EncryptedTextString.txt",ios::in);
+    file.getline(content2,1000);
+    cout << "From EncryptedText File: " << content2 <<endl;
+    file.close();
+
+    //decrypt with private key
+    M_ = EncryptDecryptString(content2, d, n);
+    //decrypt with public key
+    M = EncryptDecryptString(M_, e, n);
+
+    //write to another file
+    file.open("DecryptedTextString.txt",ios::trunc|ios::out);
+    file<<M;
+    file.close();
+
+    cout << "Ciphertext: " << C << endl;
+    cout << "Plaintext: " << M << endl;
+}
+
+int main()
+{
+    long int e, d, n;
+    KeyGen(e, d, n);
+    cout << "Public Key: (" << e << "," << n << ")" << endl;
+    cout << "Private Key: (" << d << "," << n << ")" << endl;
+
+    cout << "\n1. Numbers: \n2. String: " << endl;
+    int choice;
+    cin >> choice;
+    switch (choice){
+        case 1:
+            EncryptNumber(e,d,n);
+            break;
+        case 2:
+            EncryptString(e,d,n);
+            break;
+        default:
+            cout << "Invalid Choice. " << endl;
+            exit(1);
+    }
+
+
 
     return 0;
 }
