@@ -4,6 +4,7 @@
 #include<cstdlib>
 #include<cstring>
 #include<conio.h>
+#include<string>
 
 using namespace std;
 
@@ -102,26 +103,37 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     return x;
 }
 
-void EncryptNumber(long int e, long int d, long int n){
+long int EncryptDecrypt2 (long int t, long int EorD, long int n) {
+    long int rem;
+    long int x = 1;
 
-    //open content from text file
-    fstream file;
-    int content;
-    file.open("PlainText.txt");
-    file>>content;
-    cout << "From PlainText File: " << content <<endl;
-    file.close();
+    while (EorD != 0) {
+        rem = EorD % 2;
+        EorD = EorD / 2;
+
+        if (rem == 1) {
+            x = (x * t) % n;
+        }
+
+        t = (t * t) % n;
+    }
+
+    return x;
+}
+
+int EncryptNumber(long int c,long int e, long int d, long int n){
 
     //encrypt with public key
-    long int C_ = EncryptDecrypt(content, e, n);
+    long int C_ = EncryptDecrypt(c, e, n);
     //encrypt with private key
     long int C = EncryptDecrypt(C_, d, n);
 
+    return C;
+    /*
     //write on another file
     file.open("EncryptedText.txt");
     file<<C;
     file.close();
-
     //read from the previous file
     int content2;
     file.open("EncryptedText.txt");
@@ -141,70 +153,50 @@ void EncryptNumber(long int e, long int d, long int n){
 
     cout << "Ciphertext: " << C << endl;
     cout << "Plaintext: " << M << endl;
+    */
 }
 
-char* EncryptDecryptString (char content[], long int e, long int n)
-{
-    char *str = new char[1000];
-    str=content;
-    char *str1 = new char[1000];
+int DecryptNumber(long int c,long int e, long int d, long int n){
 
-    //cout << "Encrypting using Public Key: " << endl;
-    int i = 0;
-    while (i != strlen(str)) {
-        str1[i] = EncryptDecrypt(str[i], e, n);
-        i++;
-    }
-
-    //cout << str1 << endl;
-    return str1;
+    //decrypt with private key
+    long int M_ = EncryptDecrypt(c, d, n);
+    //decrypt with public key
+    long int M = EncryptDecrypt(M_, e, n);
+    return M;
 }
+
 
 void EncryptString(long int e, long int d, long int n){
     //open content from text file
     fstream file;
     char content[1000];
-    char *C_=new char [1000];
-    char *C=new char[1000];
+    //int *C=new long int[1000];
+    int C[1000];
+    int M[1000];
     file.open("PlainTextString.txt",ios::in);
     file.getline(content,1000);
     cout << "From PlainText File: " << content <<endl;
     file.close();
 
-    //encrypt with public key
-    C_ = EncryptDecryptString(content, e, n);
+    int i;
+    int converted[100];
+    for(i=0;i<3;i++){
+        converted[i] = content[i];
+        C[i] = EncryptNumber(converted[i],e,d,n);
+        cout<<"Converted: "<<converted[i]<<endl;
+        cout<<"Encrypted_1: "<<C[i]<<endl;
+    }
 
-    //cout<<"test: "<<C_;
-    //encrypt with private key
-    C = EncryptDecryptString(C_, d, n);
-    //cout<<"test: "<<C;
+    for(i=0;i<3;i++){
+        M[i] = DecryptNumber(C[i],e,d,n);
+        cout<<"Decrypted_1: "<<(char)M[i]<<endl;
+    }
 
-    //write on another file
-    file.open("EncryptedTextString.txt",ios::trunc|ios::out);
-    file<<C;
+    file.open("EncryptedTextString.txt");
+    for(i=0;i<3;i++){
+        file<<to_string(C[i])+" ";
+    }
     file.close();
-
-    //read from the previous file
-    char content2[1000];
-    char *M_=new char [1000];
-    char *M=new char[1000];
-    file.open("EncryptedTextString.txt",ios::in);
-    file.getline(content2,1000);
-    cout << "From EncryptedText File: " << content2 <<endl;
-    file.close();
-
-    //decrypt with private key
-    M_ = EncryptDecryptString(content2, d, n);
-    //decrypt with public key
-    M = EncryptDecryptString(M_, e, n);
-
-    //write to another file
-    file.open("DecryptedTextString.txt",ios::trunc|ios::out);
-    file<<M;
-    file.close();
-
-    cout << "Ciphertext: " << C << endl;
-    cout << "Plaintext: " << M << endl;
 }
 
 int main()
@@ -214,20 +206,8 @@ int main()
     cout << "Public Key: (" << e << "," << n << ")" << endl;
     cout << "Private Key: (" << d << "," << n << ")" << endl;
 
-    cout << "\n1. Numbers: \n2. String: " << endl;
-    int choice;
-    cin >> choice;
-    switch (choice){
-        case 1:
-            EncryptNumber(e,d,n);
-            break;
-        case 2:
-            EncryptString(e,d,n);
-            break;
-        default:
-            cout << "Invalid Choice. " << endl;
-            exit(1);
-    }
+    EncryptString(e,d,n);
+
 
 
 

@@ -7,3 +7,12 @@
 	<cstring>
 	<conio.h>
 
+1596053976 source:c:\users\weisong\desktop\projects\github\cryptographyproject2_rsa\main.cpp
+	<fstream>
+	<iostream>
+	<cmath>
+	<cstdlib>
+	<cstring>
+	<conio.h>
+	<string>
+
