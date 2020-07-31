@@ -8,3 +8,15 @@
 	<conio.h>
 	<string>
 
+1596193930 source:c:\users\weisong\desktop\projects\github\cryptographyproject2_rsa\main.cpp
+	<fstream>
+	<iostream>
+	<cmath>
+	<cstdlib>
+	<cstring>
+	<conio.h>
+	<string>
+	<sstream>
+	<vector>
+	<string.h>
+
