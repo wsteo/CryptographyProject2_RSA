@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1596148181 source:c:\users\user\documents\sem 6 2020\crypto\cryptographyproject2_rsa\main.cpp
+	<fstream>
+	<iostream>
+	<cmath>
+	<cstdlib>
+	<cstring>
+	<conio.h>
+	<string>
+
