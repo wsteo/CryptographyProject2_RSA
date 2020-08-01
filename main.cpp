@@ -110,19 +110,39 @@ void GenerateKey (long int &g, long int &f, long int &o) {
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
     long int x = 1;
+    long int plain = t;
+    int counter=0;
+    if(plain>n){
+        while(plain>n){
+            counter++;
+            plain=plain-n;
+        }
+        while (EorD != 0) {
+            rem = EorD % 2;
+            EorD = EorD / 2;
 
-    while (EorD != 0) {
-        rem = EorD % 2;
-        EorD = EorD / 2;
+            if (rem == 1) {
+                x = (x * t) % n;
+            }
 
-        if (rem == 1) {
-            x = (x * t) % n;
+            t = (t * t) % n;
         }
 
-        t = (t * t) % n;
-    }
+        return x+(n*counter);
 
-    return x;
+    }else{
+        while (EorD != 0) {
+            rem = EorD % 2;
+            EorD = EorD / 2;
+
+            if (rem == 1) {
+                x = (x * t) % n;
+            }
+
+            t = (t * t) % n;
+        }
+        return x;
+    }
 }
 
 long int EncryptDecrypt2 (long int t, long int EorD, long int n) {
@@ -143,7 +163,7 @@ long int EncryptDecrypt2 (long int t, long int EorD, long int n) {
     return x;
 }
 
-int EncryptInteger(long int c,long int e, long int d, long int n){
+long int EncryptInteger(long int c,long int e, long int d, long int n){
 
     //encrypt with public key
     long int C_ = EncryptDecrypt(c, e, n);
@@ -178,12 +198,13 @@ int EncryptInteger(long int c,long int e, long int d, long int n){
     */
 }
 
-int DecryptInteger(long int c,long int e, long int d, long int n){
+long int DecryptInteger(long int c,long int e, long int d, long int n){
 
     //decrypt with private key
     long int M_ = EncryptDecrypt(c, d, n);
     //decrypt with public key
     long int M = EncryptDecrypt(M_, e, n);
+
     return M;
 }
 
@@ -236,6 +257,7 @@ void EncryptString(long int e, long int d, long int n){
     //open content from text file
     fstream file;
     char content[1000];
+    int converted[1000];
     //int *C=new long int[1000];
     int C[1000];
     int M[1000];
@@ -252,9 +274,9 @@ void EncryptString(long int e, long int d, long int n){
     }
 
     for(int i=0;i<counter;i++){
-        //converted[i] = content[i];
-        C[i] = EncryptInteger(content[i],e,d,n);
-        cout<<"Converted: "<<content[i]<<endl;
+        converted[i] = (int)content[i];
+        C[i] = EncryptInteger(converted[i],e,d,n);
+        cout<<"Converted: "<<converted[i]<<endl;
         cout<<"Encrypted: "<<(char)C[i]<<endl;
     }
 
@@ -267,34 +289,41 @@ void EncryptString(long int e, long int d, long int n){
 
 }
 
-DecryptString(long int e, long int d, long int n){
+void DecryptString(long int e, long int d, long int n){
     fstream file;
-    char content[1000];
+    char content2[1000];
     //int *C=new long int[1000];
     int C[1000];
     int M[1000];
     int counter=0;
+
     file.open("EncryptedTextString.txt",ios::in);
-    while(file>>noskipws>>content){
-        cout << "From EncryptedTextString File: " << content;
+    while(file>>noskipws>>content2){
+        cout << "From EncryptedTextString File: " << content2;
     }
     file.close();
     cout << endl;
-    int sizearr=strlen(content);
+    int sizearr=strlen(content2);
     for(int i=0;i<sizearr;i++){
         counter++;
     }
 
     for(int i=0;i<counter;i++){
-        cout<<"test: " << content[i]<<endl;
+        cout<<"test: " << content2[i]<<endl;
     }
 
     cout<<"Decrypted: ";
 
-    for(int j=0;j<counter;j++){
-        M[j] = DecryptInteger(content[j],e,d,n);
-        cout<<(char)M[j];
+    for(int i=0;i<counter;i++){
+        //converted[i] = content[i];
+        M[i] = DecryptInteger(content2[i],e,d,n);
+        cout<<(char)M[i];
     }
+
+   /* for(int j=0;j<counter;j++){
+        M[j] = DecryptInteger(content[j],e,d,n);
+        cout<<M[j]<<endl;
+    }*/
     cout << endl;
 
 
