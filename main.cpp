@@ -59,7 +59,6 @@ long int findD (long int e, long int phi_n) {
     if (y < 1) {
         return phi_n + y;
     }
-
     return y;
 }
 
@@ -89,7 +88,7 @@ void GenerateKey (long int &g, long int &f, long int &o) {
     long int p, q;
 
     do {
-        cout << "Enter a prime number for second application (p): ";
+        cout << "\nEnter a prime number for second application (p): ";
         cin >> p;
     } while (!isPrime(p));
 
@@ -127,9 +126,7 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
 
             t = (t * t) % n;
         }
-
         return x+(n*counter);
-
     }else{
         while (EorD != 0) {
             rem = EorD % 2;
@@ -145,24 +142,6 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     }
 }
 
-long int EncryptDecrypt2 (long int t, long int EorD, long int n) {
-    long int rem;
-    long int x = 1;
-
-    while (EorD != 0) {
-        rem = EorD % 2;
-        EorD = EorD / 2;
-
-        if (rem == 1) {
-            x = (x * t) % n;
-        }
-
-        t = (t * t) % n;
-    }
-
-    return x;
-}
-
 long int EncryptInteger(long int c,long int e, long int d, long int n){
 
     //encrypt with public key
@@ -171,31 +150,6 @@ long int EncryptInteger(long int c,long int e, long int d, long int n){
     long int C = EncryptDecrypt(C_, d, n);
 
     return C;
-    /*
-    //write on another file
-    file.open("EncryptedText.txt");
-    file<<C;
-    file.close();
-    //read from the previous file
-    int content2;
-    file.open("EncryptedText.txt");
-    file>>content2;
-    cout << "From EncryptedText File: " << content2 <<endl;
-    file.close();
-
-    //decrypt with private key
-    long int M_ = EncryptDecrypt(content2, d, n);
-    //decrypt with public key
-    long int M = EncryptDecrypt(M_, e, n);
-
-    //write to another file
-    file.open("DecryptedText.txt");
-    file<<M;
-    file.close();
-
-    cout << "Ciphertext: " << C << endl;
-    cout << "Plaintext: " << M << endl;
-    */
 }
 
 long int DecryptInteger(long int c,long int e, long int d, long int n){
@@ -215,7 +169,7 @@ void EncryptNumber(long int e, long int d, long int n){
 
     file.open("PlainText.txt",ios::in);
     file>>content;
-    cout << "From PlainText File: " << content << endl;
+    cout << "\nFrom PlainText File: " << content << endl;
     file.close();
 
     //encrypt with public key
@@ -224,10 +178,9 @@ void EncryptNumber(long int e, long int d, long int n){
     long int C = EncryptDecrypt(C_, d, n);
 
     //write on another file
-    file.open("EncryptedText.txt");
+    file.open("EncryptedText.txt",ios::trunc|ios::out);
     file<<C;
     file.close();
-    //read from the previous file
 
     cout << "Ciphertext: " << C << endl;
 }
@@ -235,9 +188,10 @@ void EncryptNumber(long int e, long int d, long int n){
 void DecryptNumber(long int e, long int d, long int n){
     fstream file;
     int content2;
-    file.open("EncryptedText.txt");
+    file.open("EncryptedText.txt",ios::in);
     file>>content2;
-    cout << "From EncryptedText File: " << content2 << endl;
+    //read from the previous file
+    cout << "\nFrom EncryptedText File: " << content2 << endl;
     file.close();
 
     //decrypt with private key
@@ -246,7 +200,7 @@ void DecryptNumber(long int e, long int d, long int n){
     long int M = EncryptDecrypt(M_, e, n);
 
     //write to another file
-    file.open("DecryptedText.txt");
+    file.open("DecryptedText.txt",ios::trunc|ios::out);
     file<<M;
     file.close();
 
@@ -254,17 +208,16 @@ void DecryptNumber(long int e, long int d, long int n){
 }
 
 void EncryptString(long int e, long int d, long int n){
-    //open content from text file
     fstream file;
     char content[1000];
     int converted[1000];
-    //int *C=new long int[1000];
     int C[1000];
     int M[1000];
     int counter=0;
+        //open content from text file
     file.open("PlainTextString.txt",ios::in);
     while(file>>noskipws>>content){
-        cout << "From PlainText File: " << content;
+        cout << "\nFrom PlainText File: " << content;
     }
     file.close();
     cout << endl;
@@ -279,27 +232,24 @@ void EncryptString(long int e, long int d, long int n){
         cout<<"Converted: "<<converted[i]<<endl;
         cout<<"Encrypted: "<<(char)C[i]<<endl;
     }
-
+    //write on another file
     file.open("EncryptedTextString.txt",ios::trunc|ios::out);
     for(int i=0;i<counter;i++){
         file<<(char)C[i];
     }
     file.close();
-
-
 }
 
 void DecryptString(long int e, long int d, long int n){
     fstream file;
     char content2[1000];
-    //int *C=new long int[1000];
     int C[1000];
     int M[1000];
     int counter=0;
-
+    //read from the previous file
     file.open("EncryptedTextString.txt",ios::in);
     while(file>>noskipws>>content2){
-        cout << "From EncryptedTextString File: " << content2;
+        cout << "\nFrom EncryptedTextString File: " << content2;
     }
     file.close();
     cout << endl;
@@ -308,24 +258,22 @@ void DecryptString(long int e, long int d, long int n){
         counter++;
     }
 
-    for(int i=0;i<counter;i++){
-        cout<<"test: " << content2[i]<<endl;
-    }
-
     cout<<"Decrypted: ";
 
     for(int i=0;i<counter;i++){
-        //converted[i] = content[i];
+        M[i] = DecryptInteger(content2[i],e,d,n);
+        cout<<(char)M[i];
+    }
+    cout<<endl;
+    //write to another file
+    cout<<"Plain Text: ";
+
+    for(int i=0;i<counter;i++){
         M[i] = DecryptInteger(content2[i],e,d,n);
         cout<<(char)M[i];
     }
 
-   /* for(int j=0;j<counter;j++){
-        M[j] = DecryptInteger(content[j],e,d,n);
-        cout<<M[j]<<endl;
-    }*/
     cout << endl;
-
 
     file.open("DecryptedTextString.txt",ios::trunc|ios::out);
     for(int i=0;i<counter;i++){
@@ -340,15 +288,14 @@ int main()
     cout << "Public Key: (" << e << "," << n << ")" << endl;
     cout << "Private Key: (" << d << "," << n << ")" << endl;
 
-
-
     long int g, f, o;
     GenerateKey(g, f, o);
     cout << "Second Public Key: (" << g << "," << o << ")" << endl;
     cout << "Second Private Key: (" << f << "," << o << ")" << endl;
 
-    cout << "1. Encrypt Number:\n2. Encrypt String:" << endl;
+    cout << "\n1. Encrypt Number:\n2. Encrypt String:" << endl;
     int choice;
+    cout << "Enter Choice: ";
     cin >> choice;
 
     switch(choice){
@@ -363,8 +310,9 @@ int main()
             exit(1);
     }
 
-    cout << "1. Decrypt Number:\n2. Decrypt String:" << endl;
+    cout << "\n1. Decrypt Number:\n2. Decrypt String:" << endl;
     int choice2;
+    cout << "Enter Choice: ";
     cin >> choice2;
 
     switch (choice2){
@@ -378,9 +326,6 @@ int main()
             cout << "Invalid Option" << endl;
             exit(1);
     }
-
-
     getch();
-
     return 0;
 }
