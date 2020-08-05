@@ -316,44 +316,18 @@ int main()
     cout << "Private Key: (" << d1 << "," << n1 << ")" << endl;
 
     long int e2, d2, n2;
-    cout << "Set 1" << endl;
+    cout << "\nSet 2" << endl;
     KeyGen(e2, d2, n2);
-    cout << "Second Public Key: (" << e2 << "," << n2 << ")" << endl;
-    cout << "Second Private Key: (" << d2 << "," << n2 << ")" << endl;
+    cout << "Public Key: (" << e2 << "," << n2 << ")" << endl;
+    cout << "Private Key: (" << d2 << "," << n2 << ")" << endl;
 
-    cout << "\n1. Encrypt Number:\n2. Encrypt String:" << endl;
-    int choice;
-    cout << "Enter Choice: ";
-    cin >> choice;
-
-    switch(choice){
-        case 1:
-            //EncryptNumber(e,d,n);
-            break;
-        case 2:
-            EncryptString(e1,d1,n1,e2,d2,n2);
-            break;
-        default:
-            cout << "Invalid Option" << endl;
-            exit(1);
-    }
-
-    cout << "\n1. Decrypt Number:\n2. Decrypt String:" << endl;
-    int choice2;
-    cout << "Enter Choice: ";
-    cin >> choice2;
-
-    switch (choice2){
-        case 1:
-            //DecryptNumber(g,f,o);
-            break;
-        case 2:
-            DecryptString(e1,d1,n1,e2,d2,n2);
-            break;
-        default:
-            cout << "Invalid Option" << endl;
-            exit(1);
-    }
+    cout << "Encryption" << endl;
+    EncryptString(e1,d1,n1,e2,d2,n2);
     getch();
+
+    cout << "Decryption:" << endl;
+    DecryptString(e1,d1,n1,e2,d2,n2);
+    getch();
+
     return 0;
 }
