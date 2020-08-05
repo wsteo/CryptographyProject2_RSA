@@ -218,24 +218,32 @@ void DecryptNumber(long int e, long int d, long int n){
 
 void EncryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
-    char content[1000];
-    int converted[1000];
-    int C[1000];
-    int M[1000];
-    int counter=0;
-        //open content from text file
+    //char content[1000];
+    string content;
+    //int M[1000];
+    //int counter=0;
+    //open content from text file
     file.open("PlainTextString.txt",ios::in);
     while(file>>noskipws>>content){
         cout << "\nFrom PlainText File: " << content;
     }
     file.close();
     cout << endl;
+
+
+    int contentLength = content.length();
+    cout<<contentLength<<endl;
+    long int converted[contentLength];
+    long int C[contentLength];
+
+    /*
     int sizearr=strlen(content);
     for(int i=0;i<sizearr;i++){
         counter++;
     }
+    */
 
-    for(int i=0;i<counter;i++){
+    for(int i=0;i<contentLength;i++){
         converted[i] = (int)content[i];
         C[i] = EncryptInteger(converted[i],e1,d1,n1,e2,d2,n2);
         cout<<"Converted: "<<converted[i]<<endl;
@@ -243,7 +251,7 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     }
     //write on another file
     file.open("EncryptedTextString.txt",ios::trunc|ios::out);
-    for(int i=0;i<counter;i++){
+    for(int i=0;i<contentLength;i++){
         file<<C[i]<<",";
     }
     file.close();
@@ -253,8 +261,8 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
     fstream file;
     char content[1000];
     //int C[1000];
-    int M[1000];
-    int counter=0;
+    long int M[1000];
+    //int counter=0;
     //read from the previous file
     file.open("EncryptedTextString.txt",ios::in);
     while(file>>noskipws>>content){
@@ -268,7 +276,7 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
     int i = 0;
     while (token != NULL){
-        cout<<token<<endl;
+        //cout<<token<<endl;
         contentArr[i]=stoi(token);
         token = strtok(NULL,",");
         i++;
@@ -308,6 +316,9 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
 int main()
 {
+    string number[10]={"999999999999999999999999999999999999999999999999","1234"};
+    cout<<number[0]<<endl;
+
     cout << "RSA Experimental Version!" <<endl;
     long int e1, d1, n1;
     cout << "Set 1" << endl;
