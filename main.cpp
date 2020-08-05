@@ -6,109 +6,17 @@
 #include<conio.h>
 #include<string>
 
-using namespace std;
-
-bool isPrime (long int n) {
-    if (n < 2) return false;
-
-    long int i = 2;
-
-    while (i <= n / 2) {
-        if (n % i == 0) return false;
-        i++;
-    }
-
-    return true;
-}
-
-bool isCoPrime (long int e, long int phi_n) {
-    long int i = 2;
-    while (i < e) {
-        if ((e % i == 0) && (phi_n % i == 0)) return false;
-        i++;
-    }
-    return true;
-}
-
-long int findE (long int phi_n) {
-    long int e;
-    do {
-        cout << "Enter e value: ";
-        cin >> e;
-    } while (!isCoPrime (e, phi_n));
-    return e;
-}
-
-long int findD (long int e, long int phi_n) {
-    long int a =phi_n, b = e;
-    long int x = 0, y = 1, u = 1, v = 0, m, n, q, r;
-    long int gcd = b;
-
-    while (a != 0) {
-        q = gcd / a;
-        r = gcd % a;
-        m = x - u*q;
-        n = y - v*q;
-        gcd = a;
-        a = r;
-        x = u;
-        y = v;
-        u = m;
-        v = n;
-    }
-    if (y < 1) {
-        return phi_n + y;
-    }
-    return y;
-}
-
-void KeyGen (long int &e, long int &d, long int &n) {
-    long int p, q;
-
-    do {
-        cout << "Enter a prime number (p): ";
-        cin >> p;
-    } while (!isPrime(p));
-
-    do {
-        cout << "Enter second prime number (q): ";
-        cin >> q;
-    } while (!isPrime(q));
-
-    n = p * q;
-    long int phi_n = (p-1) * (q-1);
-
-    e = findE (phi_n);
-    d = findD (e, phi_n);
-
-    return;
-}
+#include "KeyGen.h"
 
 //Above part should have no changes
 
-/*
-void GenerateKey (long int &g, long int &f, long int &o) {
-    long int p, q;
-
-    do {
-        cout << "\nEnter a prime number for second application (p): ";
-        cin >> p;
-    } while (!isPrime(p));
-
-    do {
-        cout << "Enter second prime number for second application (q): ";
-        cin >> q;
-    } while (!isPrime(q));
-
-    o = p * q;
-    long int phi_n = (p-1) * (q-1);
-
-    g = findE (phi_n);
-    f = findD (g, phi_n);
-
-    return;
+void ShowContentDebug (int contentLength, long int content[]) {
+    cout<<endl;
+    for (int i=0; i<contentLength; i++) {
+        cout<<content[i]<<",";
+    }
+    cout<<endl;
 }
-*/
 
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
@@ -169,53 +77,6 @@ long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long in
     return M;
 }
 
-/*
-void EncryptNumber(long int e, long int d, long int n){
-    //open content from text file
-    fstream file;
-    long int content;
-
-    file.open("PlainText.txt",ios::in);
-    file>>content;
-    cout << "\nFrom PlainText File: " << content << endl;
-    file.close();
-
-    //encrypt with public key
-    long int C_ = EncryptDecrypt(content, e, n);
-    //encrypt with private key
-    long int C = EncryptDecrypt(C_, d, n);
-
-    //write on another file
-    file.open("EncryptedText.txt",ios::trunc|ios::out);
-    file<<C;
-    file.close();
-
-    cout << "Ciphertext: " << C << endl;
-}
-
-void DecryptNumber(long int e, long int d, long int n){
-    fstream file;
-    int content2;
-    file.open("EncryptedText.txt",ios::in);
-    file>>content2;
-    //read from the previous file
-    cout << "\nFrom EncryptedText File: " << content2 << endl;
-    file.close();
-
-    //decrypt with private key
-    long int M_ = EncryptDecrypt(content2, d, n);
-    //decrypt with public key
-    long int M = EncryptDecrypt(M_, e, n);
-
-    //write to another file
-    file.open("DecryptedText.txt",ios::trunc|ios::out);
-    file<<M;
-    file.close();
-
-    cout << "Decrypted Plain Text: " << M << endl;
-}
-*/
-
 void EncryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
     //char content[1000];
@@ -246,9 +107,16 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     for(int i=0;i<contentLength;i++){
         converted[i] = (int)content[i];
         C[i] = EncryptInteger(converted[i],e1,d1,n1,e2,d2,n2);
-        cout<<"Converted: "<<converted[i]<<endl;
-        cout<<"Encrypted: "<<C[i]<<endl;
+        //cout<<"Converted: "<<converted[i]<<",";
+        //cout<<"Encrypted: "<<C[i]<<",";
     }
+
+    //print out the results
+    cout<<"\nConverted:"<<endl;
+    ShowContentDebug(contentLength,converted);
+    cout<<"\nEncrypted:"<<endl;
+    ShowContentDebug(contentLength,C);
+
     //write on another file
     file.open("EncryptedTextString.txt",ios::trunc|ios::out);
     for(int i=0;i<contentLength;i++){
@@ -263,6 +131,7 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
     //int C[1000];
     long int M[1000];
     //int counter=0;
+
     //read from the previous file
     file.open("EncryptedTextString.txt",ios::in);
     while(file>>noskipws>>content){
@@ -316,9 +185,6 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
 int main()
 {
-    string number[10]={"999999999999999999999999999999999999999999999999","1234"};
-    cout<<number[0]<<endl;
-
     cout << "RSA Experimental Version!" <<endl;
     long int e1, d1, n1;
     cout << "Set 1" << endl;
