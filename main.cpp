@@ -8,16 +8,15 @@
 
 #include "KeyGen.h"
 
-//Above part should have no changes
-
 void ShowContentDebug (int contentLength, long int content[]) {
-    cout<<endl;
     for (int i=0; i<contentLength; i++) {
         cout<<content[i]<<",";
     }
     cout<<endl;
 }
 
+//this part is a bit weird... No idea why it is written 2 times.
+/*
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
     long int x = 1;
@@ -53,12 +52,31 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
         return x;
     }
 }
+*/
+
+long int EncryptDecrypt (long int t, long int EorD, long int n) {
+    long int rem;
+    long int x = 1;
+
+    while (EorD != 0) {
+        rem = EorD % 2;
+        EorD = EorD / 2;
+
+        if (rem == 1) {
+            x = (x * t) % n;
+        }
+
+        t = (t * t) % n;
+    }
+    return x;
+}
+
 
 long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
-    //encrypt with Set 1 public key
+    //encrypt with Set 2 public key
     long int C_ = EncryptDecrypt(c, e1, n1); //set 1 public key encrypt
-    //encrypt with Set 2 private key
+    //encrypt with Set 1 private key
     long int C = EncryptDecrypt(C_, d2, n2); //set 2 private key encrypt
 
     return C;
@@ -66,20 +84,24 @@ long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long in
 
 long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
+
+    //follow lecture video
     //decrypt with Set 2 public key
     long int M_ = EncryptDecrypt(c, e2, n2);
     //decrypt with Set 1 private key
     long int M = EncryptDecrypt(M_, d1, n1);
 
+/*
+    //follow the question
+    long int M_ = EncryptDecrypt(c, d2, n2);
+    long int M = EncryptDecrypt(M_, e1, n1);
+*/
     return M;
 }
 
 void EncryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
-    //char content[1000];
     string content;
-    //int M[1000];
-    //int counter=0;
 
     //open content from text file
     file.open("PlainTextString.txt",ios::in);
@@ -91,7 +113,7 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
 
     int contentLength = content.length();
-    cout<<contentLength<<endl;
+    cout<<"Plaintext length:"<<contentLength<<endl;
     long int converted[contentLength];
     long int C[contentLength];
 
@@ -103,9 +125,9 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     }
 
     //print out the results
-    cout<<"\nConverted:"<<endl;
+    cout<<"\nConverted: ";
     ShowContentDebug(contentLength,converted);
-    cout<<"\nEncrypted:"<<endl;
+    cout<<"\nEncrypted: ";
     ShowContentDebug(contentLength,C);
 
     //write on another file
@@ -146,6 +168,9 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
         cout<<(char)M[j];
     }
 
+    cout<<"\nDecrypted(int):";
+    ShowContentDebug(counter,M);
+
     //Write to file
     file.open("DecryptedTextString.txt",ios::trunc|ios::out);
     for(int j=0;j<counter;j++){
@@ -156,7 +181,7 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
 int main()
 {
-    cout << "RSA Experimental Version!" <<endl;
+    cout << "RSA Experimental Version 0.1" <<endl;
     long int e1, d1, n1;
     cout << "Set 1" << endl;
     KeyGen(e1, d1, n1);
