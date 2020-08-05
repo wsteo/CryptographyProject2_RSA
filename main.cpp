@@ -54,12 +54,11 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     }
 }
 
-//Make new changes to here
 long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
-    //encrypt with public key
+    //encrypt with Set 1 public key
     long int C_ = EncryptDecrypt(c, e1, n1); //set 1 public key encrypt
-    //encrypt with private key
+    //encrypt with Set 2 private key
     long int C = EncryptDecrypt(C_, d2, n2); //set 2 private key encrypt
 
     return C;
@@ -67,12 +66,10 @@ long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long in
 
 long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
-    //decrypt with private key
-    long int M_ = EncryptDecrypt(c, e2, n2); //set 2 public key decrypt
-    //long int M_ = EncryptDecrypt(c, d2, n2); //set 2 private key decrypt
-    //decrypt with public key
-    long int M = EncryptDecrypt(M_, d1, n1); //set 1 private key decrypt
-    //long int M = EncryptDecrypt(M_, e1, n1); //set 1 public key decrypt
+    //decrypt with Set 2 public key
+    long int M_ = EncryptDecrypt(c, e2, n2);
+    //decrypt with Set 1 private key
+    long int M = EncryptDecrypt(M_, d1, n1);
 
     return M;
 }
@@ -83,6 +80,7 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     string content;
     //int M[1000];
     //int counter=0;
+
     //open content from text file
     file.open("PlainTextString.txt",ios::in);
     while(file>>noskipws>>content){
@@ -96,13 +94,6 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     cout<<contentLength<<endl;
     long int converted[contentLength];
     long int C[contentLength];
-
-    /*
-    int sizearr=strlen(content);
-    for(int i=0;i<sizearr;i++){
-        counter++;
-    }
-    */
 
     for(int i=0;i<contentLength;i++){
         converted[i] = (int)content[i];
@@ -128,9 +119,7 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
 void DecryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
     char content[1000];
-    //int C[1000];
     long int M[1000];
-    //int counter=0;
 
     //read from the previous file
     file.open("EncryptedTextString.txt",ios::in);
@@ -143,41 +132,23 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
     char *token = strtok(content,",");
     long int contentArr[1000];
 
-    int i = 0;
+    int counter = 0;
     while (token != NULL){
         //cout<<token<<endl;
-        contentArr[i]=stoi(token);
+        contentArr[counter]=stoi(token);
         token = strtok(NULL,",");
-        i++;
-    }
-
-    /*
-    int sizearr=strlen(content2);
-    for(int i=0;i<sizearr;i++){
         counter++;
     }
-    */
 
-    cout<<"Decrypted: ";
-
-    for(int j=0;j<i;j++){
+    cout<<"\nDecrypted:"<<endl;
+    for(int j=0;j<counter;j++){
         M[j] = DecryptInteger(contentArr[j],e1,d1,n1,e2,d2,n2);
         cout<<(char)M[j];
     }
-    cout<<endl;
-    /*
-    //write to another file
-    cout<<"Plain Text: ";
 
-    for(int i=0;i<counter;i++){
-        M[i] = DecryptInteger(content2[i],e1,d1,n1);
-        cout<<(char)M[i];
-    }
-
-    cout << endl;
-    */
+    //Write to file
     file.open("DecryptedTextString.txt",ios::trunc|ios::out);
-    for(int j=0;j<i;j++){
+    for(int j=0;j<counter;j++){
         file<<(char)M[j];
     }
     file.close();
