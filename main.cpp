@@ -13,7 +13,7 @@ bool isPrime (long int n) {
 
     long int i = 2;
 
-    while (i < n / 2) {
+    while (i <= n / 2) {
         if (n % i == 0) return false;
         i++;
     }
@@ -84,6 +84,9 @@ void KeyGen (long int &e, long int &d, long int &n) {
     return;
 }
 
+//Above part should have no changes
+
+/*
 void GenerateKey (long int &g, long int &f, long int &o) {
     long int p, q;
 
@@ -105,6 +108,7 @@ void GenerateKey (long int &g, long int &f, long int &o) {
 
     return;
 }
+*/
 
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
@@ -142,26 +146,30 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     }
 }
 
-long int EncryptInteger(long int c,long int e, long int d, long int n){
+//Make new changes to here
+long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
     //encrypt with public key
-    long int C_ = EncryptDecrypt(c, e, n);
+    long int C_ = EncryptDecrypt(c, e1, n1); //set 1 public key encrypt
     //encrypt with private key
-    long int C = EncryptDecrypt(C_, d, n);
+    long int C = EncryptDecrypt(C_, d2, n2); //set 2 private key encrypt
 
     return C;
 }
 
-long int DecryptInteger(long int c,long int e, long int d, long int n){
+long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
     //decrypt with private key
-    long int M_ = EncryptDecrypt(c, d, n);
+    long int M_ = EncryptDecrypt(c, e2, n2); //set 2 public key decrypt
+    //long int M_ = EncryptDecrypt(c, d2, n2); //set 2 private key decrypt
     //decrypt with public key
-    long int M = EncryptDecrypt(M_, e, n);
+    long int M = EncryptDecrypt(M_, d1, n1); //set 1 private key decrypt
+    //long int M = EncryptDecrypt(M_, e1, n1); //set 1 public key decrypt
 
     return M;
 }
 
+/*
 void EncryptNumber(long int e, long int d, long int n){
     //open content from text file
     fstream file;
@@ -206,8 +214,9 @@ void DecryptNumber(long int e, long int d, long int n){
 
     cout << "Decrypted Plain Text: " << M << endl;
 }
+*/
 
-void EncryptString(long int e, long int d, long int n){
+void EncryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
     char content[1000];
     int converted[1000];
@@ -228,70 +237,89 @@ void EncryptString(long int e, long int d, long int n){
 
     for(int i=0;i<counter;i++){
         converted[i] = (int)content[i];
-        C[i] = EncryptInteger(converted[i],e,d,n);
+        C[i] = EncryptInteger(converted[i],e1,d1,n1,e2,d2,n2);
         cout<<"Converted: "<<converted[i]<<endl;
-        cout<<"Encrypted: "<<(char)C[i]<<endl;
+        cout<<"Encrypted: "<<C[i]<<endl;
     }
     //write on another file
     file.open("EncryptedTextString.txt",ios::trunc|ios::out);
     for(int i=0;i<counter;i++){
-        file<<(char)C[i];
+        file<<C[i]<<",";
     }
     file.close();
 }
 
-void DecryptString(long int e, long int d, long int n){
+void DecryptString(long int e1, long int d1, long int n1, long int e2, long int d2, long int n2){
     fstream file;
-    char content2[1000];
-    int C[1000];
+    char content[1000];
+    //int C[1000];
     int M[1000];
     int counter=0;
     //read from the previous file
     file.open("EncryptedTextString.txt",ios::in);
-    while(file>>noskipws>>content2){
-        cout << "\nFrom EncryptedTextString File: " << content2;
+    while(file>>noskipws>>content){
+        cout << "\nFrom EncryptedTextString File: " << content;
     }
     file.close();
     cout << endl;
+
+    char *token = strtok(content,",");
+    long int contentArr[1000];
+
+    int i = 0;
+    while (token != NULL){
+        cout<<token<<endl;
+        contentArr[i]=stoi(token);
+        token = strtok(NULL,",");
+        i++;
+    }
+
+    /*
     int sizearr=strlen(content2);
     for(int i=0;i<sizearr;i++){
         counter++;
     }
+    */
 
     cout<<"Decrypted: ";
 
-    for(int i=0;i<counter;i++){
-        M[i] = DecryptInteger(content2[i],e,d,n);
-        cout<<(char)M[i];
+    for(int j=0;j<i;j++){
+        M[j] = DecryptInteger(contentArr[j],e1,d1,n1,e2,d2,n2);
+        cout<<(char)M[j];
     }
     cout<<endl;
+    /*
     //write to another file
     cout<<"Plain Text: ";
 
     for(int i=0;i<counter;i++){
-        M[i] = DecryptInteger(content2[i],e,d,n);
+        M[i] = DecryptInteger(content2[i],e1,d1,n1);
         cout<<(char)M[i];
     }
 
     cout << endl;
-
+    */
     file.open("DecryptedTextString.txt",ios::trunc|ios::out);
-    for(int i=0;i<counter;i++){
-        file<<(char)M[i];
+    for(int j=0;j<i;j++){
+        file<<(char)M[j];
     }
+    file.close();
 }
 
 int main()
 {
-    long int e, d, n;
-    KeyGen(e, d, n);
-    cout << "Public Key: (" << e << "," << n << ")" << endl;
-    cout << "Private Key: (" << d << "," << n << ")" << endl;
+    cout << "RSA Experimental Version!" <<endl;
+    long int e1, d1, n1;
+    cout << "Set 1" << endl;
+    KeyGen(e1, d1, n1);
+    cout << "Public Key: (" << e1 << "," << n1 << ")" << endl;
+    cout << "Private Key: (" << d1 << "," << n1 << ")" << endl;
 
-    long int g, f, o;
-    GenerateKey(g, f, o);
-    cout << "Second Public Key: (" << g << "," << o << ")" << endl;
-    cout << "Second Private Key: (" << f << "," << o << ")" << endl;
+    long int e2, d2, n2;
+    cout << "Set 1" << endl;
+    KeyGen(e2, d2, n2);
+    cout << "Second Public Key: (" << e2 << "," << n2 << ")" << endl;
+    cout << "Second Private Key: (" << d2 << "," << n2 << ")" << endl;
 
     cout << "\n1. Encrypt Number:\n2. Encrypt String:" << endl;
     int choice;
@@ -300,10 +328,10 @@ int main()
 
     switch(choice){
         case 1:
-            EncryptNumber(e,d,n);
+            //EncryptNumber(e,d,n);
             break;
         case 2:
-            EncryptString(e,d,n);
+            EncryptString(e1,d1,n1,e2,d2,n2);
             break;
         default:
             cout << "Invalid Option" << endl;
@@ -317,10 +345,10 @@ int main()
 
     switch (choice2){
         case 1:
-            DecryptNumber(g,f,o);
+            //DecryptNumber(g,f,o);
             break;
         case 2:
-            DecryptString(g,f,o);
+            DecryptString(e1,d1,n1,e2,d2,n2);
             break;
         default:
             cout << "Invalid Option" << endl;
