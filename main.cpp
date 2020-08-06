@@ -54,9 +54,9 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
 
 long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
-    //encrypt with Set 2 public key
+    //encrypt with Set 1 public key
     long int C_ = EncryptDecrypt(c, e1, n1); //set 1 public key encrypt
-    //encrypt with Set 1 private key
+    //encrypt with Set 2 private key
     long int C = EncryptDecrypt(C_, d2, n2); //set 2 private key encrypt
 
     return C;
@@ -64,8 +64,6 @@ long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long in
 
 long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
-
-    //follow lecture video
     //decrypt with Set 2 public key
     long int M_ = EncryptDecrypt(c, e2, n2);
     //decrypt with Set 1 private key
