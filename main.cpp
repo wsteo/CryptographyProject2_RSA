@@ -15,7 +15,7 @@ void ShowContentDebug (int contentLength, long int content[]) {
     cout<<endl;
 }
 
-//can calculate bigger integer
+//Calculate bigger integer
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
     long int x = 1;
@@ -51,26 +51,6 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
         return x;
     }
 }
-
-
-/*
-long int EncryptDecrypt (long int t, long int EorD, long int n) {
-    long int rem;
-    long int x = 1;
-
-    while (EorD != 0) {
-        rem = EorD % 2;
-        EorD = EorD / 2;
-
-        if (rem == 1) {
-            x = (x * t) % n;
-        }
-
-        t = (t * t) % n;
-    }
-    return x;
-}
-*/
 
 long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
