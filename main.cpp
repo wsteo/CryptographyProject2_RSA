@@ -159,7 +159,7 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
 
 int main()
 {
-    cout << "RSA Experimental Version 0.1" <<endl;
+    cout << "RSA Stable Version" <<endl;
     long int e1, d1, n1;
     cout << "Set 1" << endl;
     KeyGen(e1, d1, n1);
