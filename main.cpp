@@ -142,14 +142,17 @@ void DecryptString(long int e1, long int d1, long int n1, long int e2, long int 
         counter++;
     }
 
-    cout<<"\nDecrypted:"<<endl;
     for(int j=0;j<counter;j++){
         M[j] = DecryptInteger(contentArr[j],e1,d1,n1,e2,d2,n2);
-        cout<<(char)M[j];
     }
 
-    cout<<"\nDecrypted(int):";
+    cout<<"\nDecrypted(from integer):";
     ShowContentDebug(counter,M);
+
+    cout<<"\nDecrypted Text:";
+    for(int j=0;j<counter;j++){
+        cout<<(char)M[j];
+    }
 
     //Write to file
     file.open("DecryptedTextString.txt",ios::trunc|ios::out);
@@ -174,11 +177,15 @@ int main()
     cout << "Public Key: (" << e2 << "," << n2 << ")" << endl;
     cout << "Private Key: (" << d2 << "," << n2 << ")" << endl;
 
-    cout << "Encryption" << endl;
+    cout << "\n------------------------------------------";
+    cout << "\nEncryption";
     EncryptString(e1,d1,n1,e2,d2,n2);
+
+    cout << "\nPress any key to proceed to decryption.\n" <<endl;
     getch();
 
-    cout << "Decryption:" << endl;
+    cout << "------------------------------------------";
+    cout << "\nDecryption";
     DecryptString(e1,d1,n1,e2,d2,n2);
     getch();
 
