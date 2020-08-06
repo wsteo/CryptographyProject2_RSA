@@ -71,11 +71,6 @@ long int DecryptInteger(long int c,long int e1, long int d1, long int n1,long in
     //decrypt with Set 1 private key
     long int M = EncryptDecrypt(M_, d1, n1);
 
-/*
-    //follow the question
-    long int M_ = EncryptDecrypt(c, d2, n2);
-    long int M = EncryptDecrypt(M_, e1, n1);
-*/
     return M;
 }
 

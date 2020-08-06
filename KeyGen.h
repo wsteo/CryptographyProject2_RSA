@@ -1,16 +1,6 @@
 #ifndef KEYGEN_H_INCLUDED
 #define KEYGEN_H_INCLUDED
 
-/*
-#include <fstream>
-#include<iostream>
-#include<cmath>
-#include<cstdlib>
-#include<cstring>
-#include<conio.h>
-#include<string>
-*/
-
 using namespace std;
 
 bool isPrime (long int n) {
