@@ -15,8 +15,7 @@ void ShowContentDebug (int contentLength, long int content[]) {
     cout<<endl;
 }
 
-//this part is a bit weird... No idea why it is written 2 times.
-/*
+//can calculate bigger integer
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
     long int x = 1;
@@ -52,8 +51,9 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
         return x;
     }
 }
-*/
 
+
+/*
 long int EncryptDecrypt (long int t, long int EorD, long int n) {
     long int rem;
     long int x = 1;
@@ -70,7 +70,7 @@ long int EncryptDecrypt (long int t, long int EorD, long int n) {
     }
     return x;
 }
-
+*/
 
 long int EncryptInteger(long int c,long int e1, long int d1, long int n1,long int e2, long int d2, long int n2){
 
