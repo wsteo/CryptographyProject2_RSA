@@ -84,7 +84,6 @@ void EncryptString(long int e1, long int d1, long int n1, long int e2, long int 
     file.close();
     cout << endl;
 
-
     int contentLength = content.length();
     cout<<"Plaintext length:"<<contentLength<<endl;
     long int converted[contentLength];
